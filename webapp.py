@@ -5,12 +5,15 @@ import string
 import locale
 import random
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 app.secret_key = "MY_SUPER_SECRET_KEY"
+UPLOAD_FOLDER = 'static/pic/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-engine = create_engine('sqlite:///fizzBuzz.db')
+engine = create_engine('sqlite:///database.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine, autoflush=False)
 session = DBSession()
@@ -35,17 +38,20 @@ def generateConfirmationNumber():
 
 @app.route('/')
 def index():
-    return redirect(url_for('inventory'))
+    return redirect(url_for('inventory',customer_id='None'))
 
 @app.route('/hello/')
 @app.route("/hello/<name>")
 def hello(name=None):
     return render_template('hello_page.html',name=name)
 
-@app.route('/inventory')
-def inventory():
+@app.route('/inventory/<customer_id>')
+def inventory(customer_id):
+    if customer_id == 'None':
+        return redirect(url_for('login'))
+    customer = session.query(Customer).filter_by(id=customer_id).one()
     items = session.query(Product).all()
-    return render_template("inventory.html",items=items)
+    return render_template("inventory.html",items=items,customer=customer)
 
 @app.route('/user/<int:user_id>')
 def show_user_profile(user_id):
@@ -95,7 +101,7 @@ def login():
             login_session['id'] = customer.id
             
             flash ('login Successful! Welcome back, 00-%s' % customer.name)
-            return redirect(url_for('inventory'))
+            return redirect(url_for('inventory',customer_id=customer.id))
         else:
             flash('Incorrect username/password combination')
             return redirect(url_for('login'))
@@ -124,7 +130,7 @@ def newCustomer():
         login_session['email'] = customer.email
         login_session['id'] = customer.id
         flash ('login Successful! Welcome, agent 00-%s' % customer.name)
-        return redirect(url_for('inventory'))
+        return redirect(url_for('inventory',customer_id=session.query(Customer).all()[-1].id))
     else:
         return render_template('newCustomer.html')
 
@@ -270,20 +276,34 @@ def are_you_sure_to_log_out():
             return redirect(url_for('inventory'))
 
 
-@app.route('/upload_page')
-def upload_page():
-    all_products=session.query(Product).all()
-    all_tags=[]
-    for product_to_check in all_products:
-        for tag in product_to_check.tags.split():
-            if tag not in all_tags:
-                all_tags.append(tag)
+@app.route('/upload_page/<int:customer_id>', methods = ['GET','POST'])
+def upload_page(customer_id):
+    if request.method=='GET':
+        all_products=session.query(Product).all()
+        all_tags=[]
+        for product_to_check in all_products:
+            for tag in product_to_check.tags.split():
+                if tag not in all_tags:
+                    all_tags.append(tag)
 
-    return render_template('upload_product.html', tags=all_tags)
+        return render_template('upload_product.html', tags=all_tags, customer_id=customer_id)
+    
+    elif request.method=='POST':
+        image = request.files['pic']
+        path = UPLOAD_FOLDER+secure_filename(image.filename)
+        image.save(path)
+        print os.path.realpath(image.filename)
 
-@app.route('/upload_product')
-def upload_product():
-    newProduct = Product(name=product['name'], description=product['description'], photo=product['photo'], price=product['price'], tags=product['tags'], stars=randint(6,10)/2.0, number_of_reviews=0)
+        product_name=request.form['name']
+        description=request.form['description']
+        tags=request.form['tags']
+        price=request.form['price']
+        newProduct = Product(name=product_name, description=description, photo='/'+path, price=price, tags=tags, stars=0.5, number_of_reviews=0,customer_id=customer_id)
+        session.add(newProduct)
+        session.commit()
+        return redirect(url_for('inventory',customer_id=customer_id))
+
+
 
 @app.route('/logout')
 def logout():

@@ -32,6 +32,7 @@ class Customer(Base):
     when_created=Column(DateTime, default=datetime.now())
     deleted=Column(Boolean)
     when_deleted=Column(DateTime, default=None)
+    products=relationship('Product',back_populates="customer")
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -79,15 +80,17 @@ class Product(Base):
     description = Column(String)
     photo = Column(String)
     price = Column(String)
-    #inventory = relationship("Inventory", uselist=False, back_populates="product")
+    timestamp = Column(DateTime, default=datetime.now())
     tags=Column(String)
     orders = relationship("OrdersAssociation", back_populates="product")
     stars=Column(Float)
     number_of_reviews=Column(Integer)
     shoppingCarts = relationship("ShoppingCartAssociation", back_populates="product")
+    customer_id = Column(Integer, ForeignKey('customer.id'))
+    customer = relationship("Customer", back_populates="products")
 
 
-engine = create_engine('sqlite:///fizzBuzz.db')
+engine = create_engine('sqlite:///database.db')
 
 
 Base.metadata.create_all(engine)

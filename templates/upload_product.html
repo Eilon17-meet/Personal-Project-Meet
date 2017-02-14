@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
 <script type="text/javascript" src="static/js/bootstrap.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-<title>MI6 Agency's Drink Shop</title>
+<title>Yad 2 Music Shop</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,7 +33,7 @@
     <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand">MI6 Agency's Drink Shop</a>
+      <a class="navbar-brand" href="{{url_for('inventory',customer_id=customer_id)}}" >MI6 Agency's Drink Shop</a>
     </div>
     <ul class="nav navbar-nav">
       <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
@@ -55,20 +55,18 @@
 <div class="col-md-10">
 <h1>Upload Product</h1>
 
-<form action="{{ url_for('upload_product') }}">
+<form action="{{ url_for('upload_page',customer_id=customer_id) }}" method = 'post' enctype="multipart/form-data" >
 <h4>Product Info:</h4>
   Name Of The Product:<br>
-  <input class="form-control" type="text" name="name"><br>
+  <input class="form-control" type="text" name="name" placeholder="Product's Name"><br>
   Description:<br>
-  <input class="form-control" type="text" name="description"><br>
+  <input class="form-control" type="text" name="description" placeholder="Product's Description"><br>
   Tags:<br>
   <input class="form-control" type="text" name="tags" placeholder="Separate Tags With Spaces"><br>
+  Photo:<br>
+  <input type="file" name="pic"><br>
   Price:<br>
-  <div class="col-xs-1">$</div><div class="col-md-11"><input class="form-control" type="text" name="tags" placeholder="Price In American Dollars"></div><br><br>
-
-  <h4>Contact Info:</h4>
-  Your Email:<br>
-  <input class="form-control" type="email" name="email"><br>
+  <div class="col-md-1">$</div><div class="col-md-11"><input class="form-control" type="text" name="price" placeholder="Price In American Dollars"></div><br><br>
 
   <div class="col-md-12">
    <input class="form-control" type="submit" value="Upload Product">
