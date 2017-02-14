@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String, DateTime, ForeignKey, Float
+from sqlalchemy import Column,Integer,String, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, func
@@ -20,42 +20,74 @@ Base = declarative_base()
 #     product = relationship("Product", back_populates="inventory")
 
 
-class User(Base):
-	__tablename__ = 'user'
-	id=Column(Integer, primary_key=True)
-	name=Column(String)
-	location=Column(String)
-	email = Column(String(255), unique=True)
-	phone_number=Column(String)
-	password_hash = Column(String(255))
-	songs=relationship("Song", back_populates="user")
-	
-	#instruments=relationship("Instrument", back_populates="user")
-	def hash_password(self, password):
-		self.password_hash = pwd_context.encrypt(password)
+class Customer(Base):
+    __tablename__ = 'customer'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    address = Column(String(255))
+    email = Column(String(255), unique=True)
+    shoppingCart = relationship("ShoppingCart", uselist=False, back_populates="customer")
+    password_hash = Column(String(255))
+    orders = relationship("Order", back_populates="customer")
+    when_created=Column(DateTime, default=datetime.now())
+    deleted=Column(Boolean)
+    when_deleted=Column(DateTime, default=None)
+    products=relationship('Product',back_populates="customer")
 
-	def verify_password(self, password):
-		return pwd_context.verify(password, self.password_hash)
+    def hash_password(self, password):
+        self.password_hash = pwd_context.encrypt(password)
 
-class Song(Base):
-	__tablename__ = 'song'
-	id=Column(Integer, primary_key=True)
-	name=Column(String)
-	
-	user_id = Column(Integer, ForeignKey('user.id'))
-	user=relationship("User", back_populates="songs")
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
 
-'''
-class Instrument(Base):
-	__tablename__ = 'instrument'
-	id=Column(Integer, primary_key=True)
-	name=Column(String)
-	#time_played=Column(Integer)
-	#type_of_time_played=Column(String)
-	user_id = Column(Integer, ForeignKey('user.id'))
-	user=relationship("User", back_populates="instrument")
-'''
+class ShoppingCart(Base):
+    __tablename__ = 'shoppingCart'
+    id = Column(Integer, primary_key=True)
+    customer_id = Column(Integer, ForeignKey('customer.id'))
+    customer = relationship("Customer", back_populates="shoppingCart")
+    products = relationship("ShoppingCartAssociation", back_populates="shoppingCart")
 
+class OrdersAssociation(Base):
+    __tablename__ = 'OrdersAssociation'
+    order_id = Column(Integer, ForeignKey('order.id'), primary_key=True)
+    product_id = Column(Integer, ForeignKey('product.id'), primary_key=True)
+    product_qty = Column(Integer)
+    product = relationship("Product", back_populates="orders")
+    order = relationship("Order", back_populates="products")
+
+class ShoppingCartAssociation(Base):
+    __tablename__ = 'shoppingCartAssociation'
+    shopping_cart_id = Column(Integer, ForeignKey('shoppingCart.id'), primary_key=True)
+    product_id = Column(Integer, ForeignKey('product.id'), primary_key=True)
+    quantity = Column(Integer)
+    product = relationship("Product", back_populates="shoppingCarts")
+    shoppingCart = relationship("ShoppingCart", back_populates="products")
+
+class Order(Base):
+    __tablename__ = 'order'
+    id = Column(Integer, primary_key=True)
+    total = Column(Float)
+    timestamp = Column(DateTime, default=datetime.now())
+    confirmation = Column(String, unique=True)
+    products = relationship("OrdersAssociation", back_populates="order")
+    customer_id = Column(Integer, ForeignKey('customer.id'))
+    customer = relationship("Customer", back_populates="orders")
+
+class Product(Base):
+    __tablename__ = 'product'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    photo = Column(String)
+    price = Column(String)
+    timestamp = Column(DateTime, default=datetime.now())
+    tags=Column(String)
+    orders = relationship("OrdersAssociation", back_populates="product")
+    stars=Column(Float)
+    number_of_reviews=Column(Integer)
+    shoppingCarts = relationship("ShoppingCartAssociation", back_populates="product")
+    customer_id = Column(Integer, ForeignKey('customer.id'))
+    customer = relationship("Customer", back_populates="products")
 
 
 engine = create_engine('sqlite:///database.db')

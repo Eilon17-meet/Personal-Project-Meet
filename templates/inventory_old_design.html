@@ -1,0 +1,49 @@
+<head>
+<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<title>MI6 Agency's Drink Shop</title>
+</head>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Home</a></li>
+  <li role="presentation"><a href={{url_for('login')}}>Log in</a></li>
+  <li role="presentation"><a href={{url_for('are_you_sure_to_log_out')}}>Log Out</a></li>
+</ul>
+
+<h1>MI6 Agency's Drink Shop</h1>
+
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+{%if items==[]%}
+<p> There is nothing here. Nope.</p>
+
+{%else%}
+<div class="product">
+	<table class="table table-hover">
+	<thead>
+	<tr>
+		<th>Name</th><th>Price</th><th></th>
+	</tr>
+	</thead>
+	<tbody>
+	{%for item in items %}
+	<tr>
+		<td><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a></td>
+		<td>{{item.price}} </td><td></td><td></td>
+		<td><a href={{url_for('product', product_id=item.id)}}><img src={{item.photo}} height="250"></a></td>
+	</tr>
+	{%endfor%}
+	</tbody>
+</table>
+</div>
+{%endif%}

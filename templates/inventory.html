@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
+<script type="text/javascript" src="static/js/bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+<title>Yad 2 Music Shop</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <!-- Bootstrap Core CSS -->
+
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand">Yad 2 Music Shop</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
+      <li><a href={{url_for('checkout')}}><span class="glyphicon glyphicon-check"> </span> Checkout</a></li>
+      <li><a href={{url_for('upload_page', customer_id=customer.id)}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
+
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href={{url_for('are_you_sure_to_log_out')}}><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+    </ul>
+  </div>
+</nav>
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+<div class="col-md-1"></div>
+            <div class="col-md-10">
+            <h1>MI6 Agency's Drink Shop</h1>
+                <div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+                <div class="row">
+{%if items==[]%}
+<p> There is nothing here. Nope.</p>
+
+{%else%}
+
+{%for item in items %}
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <a href={{url_for('product', product_id=item.id)}}>
+                            	<img src={{item.photo}} style="height: 250px">
+                            </a>
+                            <div class="caption">
+                                <h4 class="pull-right">${{item.price}}</h4>
+                                <h4><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a>
+                                </h4>
+                                <p>{{item.description}}</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">
+                                {{item.number_of_reviews}} reviews
+                                </p>
+                                <p>{%if item.stars|int==item.stars%}
+                                {%for star in range(item.stars|int) %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {%endfor%}
+                                {%else%}
+                                {%for star in range(item.stars|int) %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {%endfor%}
+                                <span class="glyphicon glyphicon-star-empty"></span>
+                                {%endif%}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+{%endfor%}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /.container -->
+{%endif%}
+    <div class="container">
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Eilon Goldberg</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</body>
+
+</html>
