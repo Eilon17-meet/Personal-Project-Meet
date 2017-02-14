@@ -11,7 +11,7 @@ session = DBSession()
 
 @app.route('/')
 def index():
-    return 'hello'
+    return  render_template('index.html')
 
 
 
