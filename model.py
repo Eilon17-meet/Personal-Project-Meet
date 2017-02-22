@@ -26,13 +26,13 @@ class Customer(Base):
     name = Column(String(255))
     address = Column(String(255))
     email = Column(String(255), unique=True)
-    shoppingCart = relationship("ShoppingCart", uselist=False, back_populates="customer")
     password_hash = Column(String(255))
-    orders = relationship("Order", back_populates="customer")
     when_created=Column(DateTime, default=datetime.now())
     deleted=Column(Boolean)
     when_deleted=Column(DateTime, default=None)
-    products=relationship('Product',back_populates="customer")
+    comments = relationship("Comment", back_populates="customer")
+    products = relationship("Product", back_populates="customer")
+    favorites = relationship("Favorite", back_populates="customer")
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -40,38 +40,14 @@ class Customer(Base):
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
 
-class ShoppingCart(Base):
-    __tablename__ = 'shoppingCart'
+class Favorite(Base):
+    __tablename__ = 'favorite'
     id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    customer = relationship("Customer", back_populates="shoppingCart")
-    products = relationship("ShoppingCartAssociation", back_populates="shoppingCart")
+    product_id=Column(Integer, ForeignKey('product.id'))
+    product = relationship("Product", back_populates="favorite")
+    customer_id=Column(Integer, ForeignKey('customer.id'))
+    customer=relationship("Customer", back_populates="favorites")
 
-class OrdersAssociation(Base):
-    __tablename__ = 'OrdersAssociation'
-    order_id = Column(Integer, ForeignKey('order.id'), primary_key=True)
-    product_id = Column(Integer, ForeignKey('product.id'), primary_key=True)
-    product_qty = Column(Integer)
-    product = relationship("Product", back_populates="orders")
-    order = relationship("Order", back_populates="products")
-
-class ShoppingCartAssociation(Base):
-    __tablename__ = 'shoppingCartAssociation'
-    shopping_cart_id = Column(Integer, ForeignKey('shoppingCart.id'), primary_key=True)
-    product_id = Column(Integer, ForeignKey('product.id'), primary_key=True)
-    quantity = Column(Integer)
-    product = relationship("Product", back_populates="shoppingCarts")
-    shoppingCart = relationship("ShoppingCart", back_populates="products")
-
-class Order(Base):
-    __tablename__ = 'order'
-    id = Column(Integer, primary_key=True)
-    total = Column(Float)
-    timestamp = Column(DateTime, default=datetime.now())
-    confirmation = Column(String, unique=True)
-    products = relationship("OrdersAssociation", back_populates="order")
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    customer = relationship("Customer", back_populates="orders")
 
 class Product(Base):
     __tablename__ = 'product'
@@ -80,15 +56,24 @@ class Product(Base):
     description = Column(String)
     photo = Column(String)
     price = Column(String)
-    timestamp = Column(DateTime, default=datetime.now())
     tags=Column(String)
-    orders = relationship("OrdersAssociation", back_populates="product")
-    stars=Column(Float)
-    number_of_reviews=Column(Integer)
-    shoppingCarts = relationship("ShoppingCartAssociation", back_populates="product")
-    customer_id = Column(Integer, ForeignKey('customer.id'))
+    timestamp = Column(DateTime, default=datetime.now())
+    stars=Column(Integer)
+    comments=relationship("Comment", back_populates="product")
+    customer_id=Column(Integer, ForeignKey('customer.id'))
     customer = relationship("Customer", back_populates="products")
+    favorite=relationship('Favorite',back_populates='product')
 
+class Comment(Base):
+    __tablename__ = 'comment'
+    id=Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.now())
+    text=Column(String)
+    stars=Column(Integer, default=0)
+    customer_id=Column(Integer, ForeignKey('customer.id'))
+    customer = relationship("Customer", back_populates="comments")
+    product_id=Column(Integer, ForeignKey('product.id'))
+    product = relationship("Product", back_populates="comments")
 
 engine = create_engine('sqlite:///database.db')
 

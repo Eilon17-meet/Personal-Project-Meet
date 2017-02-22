@@ -35,7 +35,7 @@
       <a class="navbar-brand" href="{{url_for('index')}}">MI6 Agency's Drink Shop</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
+      <li><a href={{url_for('favorites')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
       <li><a href={{url_for('checkout')}}><span class="glyphicon glyphicon-check"> </span> Checkout</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -52,7 +52,7 @@
         <div class="row">
 
 <div class="col-md-1"></div>
-            <div class="col-md-10"><h1>Shopping Cart for {{shoppingCart.customer.name}}</h1>
+            <div class="col-md-10"><h1>Favorites of {{customer.name}}</h1>
 
 <div class = 'flash'>
     {% with messages = get_flashed_messages() %}
@@ -66,7 +66,7 @@
         {% endif %}
     {% endwith %}
 
-{%if shoppingCart.products==[]%}
+{%if customer.favorites==[]%}
 <p>There are no items in your shopping cart, agent.</p>
 {%else%}
 <div class="container-fluid">
@@ -77,50 +77,16 @@
 	</tr>
 	</thead>
     <tbody>
-	{%for item in shoppingCart.products %}
-	<tr id={{item.product.id}}>
-		<td>{{item.product.name}}</td>
-		<td class="product_price">{{item.product.price}}</td>
-        
-		<td>
-			<form action={{url_for('updateQuantity',product_id=item.product.id)}} method="post">
-			<!--<input onclick="change_price({{item.product.id}})" class="quantity" class="form-control" type="number" name="quantity" min="0" max="100" step="1"
-			value={{item.quantity}}></td> IMPROVE-->
-            <input class="quantity" class="form-control" type="number" name="quantity" min="0" max="100" step="1"
-            value={{item.quantity}}></td>
-			<td> <div class='col-md-8'><input class="form-control" type="submit" value="Update Quantity"></div>
-			</form>
-			</td>
-			<td><form action={{url_for('removeFromCart', product_id= item.product.id)}} method="post"> <div class='col-md-8'><input class="form-control" type="submit" value="Remove Item"></div></form>
+	{%for fav in customer.favorites %}
+	<tr id={{fav.product.id}}>
+		<td><a href={{url_for('product',product_id=fav.product.id)}}>{{fav.product.name}}</a></td>
+		<td class="product_price">${{fav.product.price}}</td>
+			
+		
+			<td><form action={{url_for('removeFromCart', product_id= fav.product.id)}} method="post"> <div class='col-md-8'><input class="form-control" type="submit" value="Remove Item"></div></form>
 	</tr>
 {%endfor%}
 </tbody>
-<script type="text/javascript">
-        window.onload = function() {
-          change_prices();
-        };
-                var price_list=document.getElementsByClassName("product_price");
-                var quantity_list=document.getElementsByClassName("quantity");
-
-            function change_prices() {
-                var total
-                for (var i = price_list.length - 1; i >= 0; i--) {
-                    total=price_list[i].innerHTML*quantity_list[i].value;
-                    price_list[i].innerHTML = "$"+total.toFixed(2);
-                }    
-        }
-        /*    function change_price(id) {
-                var row=document.getElementById(id);
-                var price=row.getElementsByClassName("product_price")[0];
-                var quantity=row.getElementsByClassName("quantity")[0];
-                total=(parseInt(price.innerHTML.slice(1)*quantity.value)).toString();
-                price.innerHTML="$"+total;
-                // IMPROVE
-                 
-        }*/
-        </script>
 </table></div></div>
-<a href={{url_for('checkout')}}>Check Out</a>
 {%endif%}
-<br>
-<a href={{url_for('inventory')}}>Home</a>
+<a class="btn" href={{url_for('inventory')}}>Home</a>

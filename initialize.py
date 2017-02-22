@@ -7,21 +7,17 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine, autoflush=False)
 session = DBSession()
 
-choice=eval(raw_input("Delete also data? ('True' / 'False') ").lower().capitalize())
-if choice:
-	session.query(Customer).delete()
-	session.query(ShoppingCart).delete()
-	session.query(OrdersAssociation).delete()
-	session.query(ShoppingCartAssociation).delete()
-	session.query(Order).delete()
-	admin_email='eilon246810@gmail.com'
-	admin_password='eilon123'	
-	admin = Customer(name = 'M (Eilon)', email=admin_email, address = 'No Adress')
-	admin.hash_password(admin_password)
-	session.add(admin)
-	session.commit()
 
+session.query(Comment).delete()
+session.query(Customer).delete()
 session.query(Product).delete()
+admin_email='eilon246810@gmail.com'
+admin_password='eilon123'	
+admin = Customer(name = 'Manager Eilon', email=admin_email, address = 'No Adress')
+admin.hash_password(admin_password)
+session.add(admin)
+session.commit()
+
 products = [
     #{'name':'M16 Rifle', 'description':wikipedia.summary(wikipedia.search('m16 rifle')[0],sentences=1), 'photo':'/static/pic/M16.gif', 'price':'14999.99', 'tags':'gun peach'},
     #{'name':'Uzi', 'description':wikipedia.summary(wikipedia.search('uzi')[0],sentences=1), 'photo':'http://vignette4.wikia.nocookie.net/roblox-apocalypse-rising/images/8/87/Replica_Uzi.jpg/revision/latest?cb=20150128093212', 'price':'1299.99', 'tags':'gun submachine-gun'},
@@ -46,7 +42,7 @@ for product in products:
 
 
 for product in products:
-    newProduct = Product(name=product['name'], description=product['description'], photo=product['photo'], price=product['price'], tags=product['tags'], stars=randint(6,10)/2.0, number_of_reviews=randint(15,50),customer_id=1)
+    newProduct = Product(name=product['name'], description=product['description'], photo=product['photo'], price=product['price'], tags=product['tags'], stars=0, customer_id=1)
     session.add(newProduct)
     print(product['name']+': '+str(newProduct.stars))
 session.commit()

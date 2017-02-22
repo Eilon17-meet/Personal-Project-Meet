@@ -33,7 +33,7 @@
     <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{{url_for('inventory',customer_id=customer_id)}}" >MI6 Agency's Drink Shop</a>
+      <a class="navbar-brand" href="{{url_for('inventory')}}" >MI6 Agency's Drink Shop</a>
     </div>
     <ul class="nav navbar-nav">
       <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
@@ -54,11 +54,22 @@
 <div class="col-md-1"></div>
 <div class="col-md-10">
 <h1>Upload Product</h1>
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
 
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
 <form action="{{ url_for('upload_page',customer_id=customer_id) }}" method = 'post' enctype="multipart/form-data" >
 <h4>Product Info:</h4>
   Name Of The Product:<br>
-  <input class="form-control" type="text" name="name" placeholder="Product's Name"><br>
+  <input class="form-control" type="text" name="product_name" placeholder="Product's Name"><br>
   Description:<br>
   <input class="form-control" type="text" name="description" placeholder="Product's Description"><br>
   Tags:<br>

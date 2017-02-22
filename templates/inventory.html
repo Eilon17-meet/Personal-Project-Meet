@@ -36,9 +36,8 @@
       <a class="navbar-brand">Yad 2 Music Shop</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
-      <li><a href={{url_for('checkout')}}><span class="glyphicon glyphicon-check"> </span> Checkout</a></li>
-      <li><a href={{url_for('upload_page', customer_id=customer.id)}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
+      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
+      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
 
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -82,24 +81,23 @@
                             </a>
                             <div class="caption">
                                 <h4 class="pull-right">${{item.price}}</h4>
-                                <h4><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a>
+                                <h4><a href={{url_for('product', method='get', product_id=item.id)}}>{{item.name}}</a>
                                 </h4>
                                 <p>{{item.description}}</p>
                             </div>
                             <div class="ratings">
                                 <p class="pull-right">
-                                {{item.number_of_reviews}} reviews
+                                {{item.comments|length}} reviews
                                 </p>
-                                <p>{%if item.stars|int==item.stars%}
+                                <p>
                                 {%for star in range(item.stars|int) %}
                                     <span class="glyphicon glyphicon-star"></span>
                                 {%endfor%}
-                                {%else%}
-                                {%for star in range(item.stars|int) %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {%endfor%}
+                                {%for star in range(5-item.stars|int) %}
+                                    
                                 <span class="glyphicon glyphicon-star-empty"></span>
-                                {%endif%}
+                                {%endfor%}
+
                                 </p>
                             </div>
                         </div>

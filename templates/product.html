@@ -75,7 +75,7 @@ window.onload = function() {
 }
 </script>
 
-<div class="ratings">
+                                <div class="ratings">
                                 <p class="pull-right">
                                 {{product.number_of_reviews}} reviews
                                 </p>
@@ -90,7 +90,7 @@ window.onload = function() {
                                 <span class="glyphicon glyphicon-star-empty"></span>
                                 {%endif%}
                                 </p>
-                            </div>
+                                </div>
 
 <form class="form-group" action="{{url_for('addToCart', product_id=product.id)}}" method="post">
 	
