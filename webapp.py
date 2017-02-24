@@ -238,7 +238,7 @@ def shoppingCart():
 @app.route("/favorites")
 def favorites():
     if 'id' not in login_session:
-        flash("You must be logged in to perform this action, 007")
+        flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
     customer=session.query(Customer).filter_by(id=login_session['id']).one()
     return render_template('favorites.html',customer=customer)
@@ -246,7 +246,7 @@ def favorites():
 @app.route("/removeFromCart/<int:product_id>", methods = ['POST'])
 def removeFromCart(product_id):
     if 'id' not in login_session:
-        flash("You must be logged in to perform this action, 007")
+        flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
     favorite=session.query(Favorite).filter_by(customer_id=login_session['id']).filter_by(product_id=product_id).one()
     session.delete(favorite)
@@ -258,7 +258,7 @@ def removeFromCart(product_id):
 @app.route("/checkout", methods = ['GET', 'POST'])
 def checkout():
     if 'id' not in login_session:
-        flash("You must be logged in to perform this action, 007")
+        flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
     shoppingCart=session.query(ShoppingCart).filter_by(customer_id=login_session['id']).one()
     if request.method=='POST':
@@ -278,7 +278,7 @@ def checkout():
 @app.route("/confirmation/<confirmation>")
 def confirmation(confirmation):
     if 'name' not in login_session:
-        flash("You must be logged in to perform this action, 007")
+        flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
     order=session.query(Order).filter_by(confirmation=confirmation).one()
     return render_template('confirmation.html', order=order)
@@ -286,7 +286,7 @@ def confirmation(confirmation):
 @app.route('/logout/are_you_sure', methods = ['GET', 'POST'])
 def are_you_sure_to_log_out():
     if 'name' not in login_session:
-        flash("You must be logged in order to log out, 007")
+        flash("You must be logged in order to log out.")
         return redirect(url_for('login'))
     if request.method=='GET':
         return render_template('are_you_sure.html')
@@ -322,6 +322,7 @@ def upload_page():
         product_name=request.form['product_name']
         description=request.form['description']
         tags=request.form['tags']
+        tags+=' '+name.lower()
         price=request.form['price']
         if image.filename=='' or product_name =='' or description =='' or tags=='' or price=='':
             flash("Your form is missing arguments")
@@ -357,7 +358,7 @@ def logout():
         del login_session['name']
         del login_session['email']
         del login_session['id']
-        flash("Logged Out Succefully. May The Force Be With You, Agent")
+        flash("Logged Out Succefully.")
         return redirect(url_for('inventory'))
 
 @app.route('/admin_page/<admin_email>')
