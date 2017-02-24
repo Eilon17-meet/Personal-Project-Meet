@@ -189,8 +189,12 @@ $(document).ready(function(){
             </div>
 <div class="row"></div>
 
-<h3>Products You May Like</h3>
+<h3>Similar Products</h3>
 <div class="row">
+{%if common_products==[]%}
+<div class="col-sm-4 col-lg-4 col-md-4">
+Sorry, this product has no similar products yet.</div>
+{%else%}
 {%for item in common_products%}
   <div class="col-sm-4 col-lg-4 col-md-4">
                         <div class="thumbnail">
@@ -219,6 +223,7 @@ $(document).ready(function(){
                         </div>
                     </div>
   {%endfor%}
+  {%endif%}
 </div>
         </div>
 

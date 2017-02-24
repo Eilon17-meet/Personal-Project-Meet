@@ -108,7 +108,7 @@ def login():
             login_session['email'] = customer.email
             login_session['id'] = customer.id
             
-            flash ('login Successful! Welcome back, 00-%s' % customer.name)
+            flash ('login Successful! Welcome back, %s.' % customer.name)
             return redirect(url_for('inventory',customer_id=customer.id))
         else:
             flash('Incorrect username/password combination')
@@ -117,8 +117,11 @@ def login():
 @app.route('/newCustomer', methods = ['GET','POST'])
 def newCustomer():
     if request.method == 'POST':
-        name = request.form['name']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        name=first_name+' '+last_name
         email = request.form['email']
+        print '##################################################'
         password = request.form['password']
         address = request.form['address']
         if name =='' or email =='' or password =='' or address=='':
@@ -135,7 +138,7 @@ def newCustomer():
         login_session['name'] = customer.name
         login_session['email'] = customer.email
         login_session['id'] = customer.id
-        flash ('login Successful! Welcome, agent 00-%s' % customer.name)
+        flash ('You Are Successfully Signed Up! Welcome, %s.' % customer.name)
         return redirect(url_for('inventory',customer_id=session.query(Customer).all()[-1].id))
     else:
         return render_template('newCustomer.html')
