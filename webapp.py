@@ -52,11 +52,12 @@ def hello(name=None):
 def inventory():
     if len(session.query(Customer).all())==1:
         if 'id' in login_session:
-            del login_session['name']
-            del login_session['email']
-            del login_session['id']
+            if login_session['id']!=1:
+                del login_session['name']
+                del login_session['email']
+                del login_session['id']
     items = session.query(Product).all()
-    return render_template("inventory.html",items=items)
+    return render_template("inventory.html",items=items[::-1])
 
 @app.route('/user/<int:user_id>')
 def show_user_profile(user_id):
@@ -205,8 +206,6 @@ def product(product_id):
         for comment in all_commnents:
             total_stars+=comment.stars
         avarge=total_stars/len(all_commnents)
-        if avarge<5:
-            avarge+=1
         product.stars=avarge
         flash('Comment successfuly added!')
         return redirect(url_for('product',product_id=product_id))
@@ -239,7 +238,7 @@ def favorites():
         flash("You must be logged in to perform this action, 007")
         return redirect(url_for('login'))
     customer=session.query(Customer).filter_by(id=login_session['id']).one()
-    return render_template('shoppingCart.html',customer=customer)
+    return render_template('favorites.html',customer=customer)
 
 @app.route("/removeFromCart/<int:product_id>", methods = ['POST'])
 def removeFromCart(product_id):
@@ -304,6 +303,7 @@ def upload_page():
         if login_session['id']==1:
             flash("You must be logged in order to preform this action")
             return redirect(url_for('login'))   
+    
     if request.method=='GET':
         all_products=session.query(Product).all()
         all_tags=[]
@@ -320,9 +320,9 @@ def upload_page():
         description=request.form['description']
         tags=request.form['tags']
         price=request.form['price']
-        if image.filename=='' or product_name =='' or description =='' or tags=='':
+        if image.filename=='' or product_name =='' or description =='' or tags=='' or price=='':
             flash("Your form is missing arguments")
-            flash('You must have a photo, a name, a description andat least one tag for your product')
+            flash('You must have a photo, a name, a description, a price and at least one tag for your product')
             return redirect(url_for('upload_page'))
         filename=image.filename
         x=0
@@ -341,7 +341,7 @@ def upload_page():
         '''if image =='' or email =='' or password =='' or address=='':
             flash("Your form is missing arguments")
             return redirect(url_for('newCustomer'))'''
-        newProduct = Product(name=product_name, timestamp=datetime.now(), description=description, photo='/'+path, price=price, tags=tags, stars=0.5,customer_id=login_session['id'])
+        newProduct = Product(name=product_name, timestamp=datetime.now(), description=description, photo='/'+path, price=price, tags=tags, stars=0,customer_id=login_session['id'])
         session.add(newProduct)
         session.commit()
         return redirect(url_for('inventory'))
@@ -403,7 +403,7 @@ def delete_user(user_id):
     user.when_deleted=datetime.now()
     session.commit()
     flash('User Deleted Successfuly!')
-    return redirect(url_for('inventory'))
+    return redirect(url_for('admin_page',admin_page=login_session['email']))
 
 if __name__ == '__main__':
     app.run(debug=True)

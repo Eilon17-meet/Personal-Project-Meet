@@ -74,6 +74,7 @@
 {%else%}
 
 {%for item in items %}
+{%if item.customer.deleted==False%}
                     <div class="col-sm-4 col-lg-4 col-md-4">
                         <div class="thumbnail">
                             <a href={{url_for('product', product_id=item.id)}}>
@@ -102,6 +103,7 @@
                             </div>
                         </div>
                     </div>
+{%endif%}
 {%endfor%}
 
                 </div>

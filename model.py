@@ -28,7 +28,7 @@ class Customer(Base):
     email = Column(String(255), unique=True)
     password_hash = Column(String(255))
     when_created=Column(DateTime, default=datetime.now())
-    deleted=Column(Boolean)
+    deleted=Column(Boolean, default=False)
     when_deleted=Column(DateTime, default=None)
     comments = relationship("Comment", back_populates="customer")
     products = relationship("Product", back_populates="customer")

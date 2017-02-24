@@ -59,25 +59,52 @@
 <h3>Address:</h3> {{customer.address}}<br>
 <h3>Email:</h3> {{customer.email}}<br>
 <h3>Created in:</h3> {{customer.when_created}}<br>
-<h3>Shopping Cart:</h3>
-<ol>{%for product_assoc in customer.shoppingCart.products%}
+<h3>Products Uploaded:</h3>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stars</th>
+        <th>When Uploaded</th>
+    </tr>
+    </thead>
+<tbody>
+    {%for product in customer.products%}
+    <tr>
+        <td>{{product.id}}</td>
+        <td><a href={{url_for('product', product_id=product.id)}}>{{product.name}}</a></td>
+        <td>${{product.price}} </td>
+        <td>{{product.stars}}</td>
+        <td>{{product.timestamp}}</td>
+    </tr>
+{%endfor%}</tbody>
+</table><br>
+<h3>Products Uploaded:</h3>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stars</th>
+        <th>When Uploaded</th>
+    </tr>
+    </thead>
+<tbody>
+    {%for fav in customer.favorites%}
+    <tr>
+        <td>{{fav.product.id}}</td>
+        <td><a href={{url_for('product', product_id=fav.product.id)}}>{{fav.product.name}}</a></td>
+        <td>${{fav.product.price}} </td>
+        <td>{{fav.product.stars}}</td>
+        <td>{{fav.product.timestamp}}</td>
+    </tr>
+{%endfor%}</tbody>
+</table>
 
-<li>{{product_assoc.product.name}}: {{product_assoc.quantity}}</li>
-
-{%endfor%}</ol>
-<h3>Orders:</h3>
-<ol>{%for order in customer.orders%}
-<li>
-Date: {{order.timestamp}}<br>
-Total: ${{order.total}}<br>
-{%for product_assoc in order.products%}
-{{product_assoc.product.name}}: {{product_assoc.product_qty}}
-<br>
-{%endfor%}
-</li>
-<br>
-{%endfor%}
-</ol>
+<br><br>
 {%if customer.deleted%}
 <h3>Deleted in:</h3>{{customer.when_deleted}}<br>
 {%endif%}

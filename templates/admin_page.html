@@ -51,7 +51,9 @@
 
 <div class="col-md-1"></div>
             <div class="col-md-10">
-<h1>Hello, Admin {{admin.email}}</h1>
+<h1>Hello, Admin {{admin.email}}</h1><br>
+<h4>Total Customers: {{customers|length}}</h4>
+
 <h3>Exsisting Customers:</h3>
 <table class="table table-hover">
 	<thead>
@@ -60,26 +62,19 @@
 		<th>Name</th>
 		<th>Address</th>
 		<th>Email</th>
-		<th>ShoppingCart</th>
-		<th>Orders</th>
-        <th>Creation Date</th>
+        <th>Number Of Products</th>
+		<th>Creation Date</th>
 	</tr>
 	</thead>
 <tbody>
 	{%for customer in customers%}
-	{%if not customer.deleted%}<tr>
+	{%if not customer.deleted%}
+    <tr>
 		<td>{{customer.id}}</td>
-        
         <td><a href={{url_for('show_user_profile', user_id=customer.id)}}>{{customer.name}}</a></td>
-        
 		<td>{{customer.address}} </td>
 		<td>{{customer.email}}</td>
-		{%if customer.shoppingCart.products|length != 0%}
-		<td>{{customer.shoppingCart.products|length}} products</td>
-		<td>{{customer.orders|length}} orders</td>
-		{%else%}
-		<td>None</td><td>{{customer.orders|length}} orders</td>
-		{%endif%}
+        <td>{{customer.products|length}}</td>
         <td>{{customer.when_created}}</td>
 	</tr>{%endif%}
 {%endfor%}</tbody>
@@ -89,32 +84,26 @@
 
 <h3>Deleted Customers:</h3>
 <table class="table table-hover">
-    <thead>
+
+<thead>
     <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Address</th>
         <th>Email</th>
-        <th>ShoppingCart</th>
-        <th>Orders</th>
+        <th>Number Of Products</th>
         <th>Creation Date</th>
     </tr>
     </thead>
 <tbody>
     {%for customer in customers%}
-    {%if customer.deleted%}<tr>
+    {%if customer.deleted%}
+    <tr>
         <td>{{customer.id}}</td>
-        
-        <td><a href={{url_for('show_user_profile', user_id=customer.id)}} style="color: red">{{customer.name}}</a></td>
-        
+        <td><a href={{url_for('show_user_profile', user_id=customer.id)}}>{{customer.name}}</a></td>
         <td>{{customer.address}} </td>
         <td>{{customer.email}}</td>
-        {%if customer.shoppingCart.products|length != 0%}
-        <td>{{customer.shoppingCart.products|length}} products</td>
-        <td>{{customer.orders|length}} orders</td>
-        {%else%}
-        <td>None</td><td>{{customer.orders|length}} orders</td>
-        {%endif%}
+        <td>{{customer.products|length}}</td>
         <td>{{customer.when_created}}</td>
     </tr>{%endif%}
 {%endfor%}</tbody>

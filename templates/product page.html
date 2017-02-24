@@ -31,6 +31,25 @@
     <script src="/static/js/bootstrap-rating-input.min.js"></script>
 
 
+<script> 
+$(document).ready(function(){
+    $("#flip").click(function(){
+        $("#panel").slideDown("slow");
+    });
+});
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style> 
+#panel, #flip {
+    padding: 5px;
+    border: solid 1px #c3c3c3;
+}
+
+#panel {
+    padding: 50px;
+    display: none;
+}
+</style>
 </head>
 
 <body>
@@ -39,12 +58,11 @@
     <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{{url_for('index')}}">Yad 2 Music Shop</a>
+      <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href={{url_for('favorites')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
-      <li><a href={{url_for('checkout')}}><span class="glyphicon glyphicon-check"> </span> Checkout</a></li>
-      
+      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
+      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
 
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -54,7 +72,6 @@
     </ul>
   </div>
 </nav>
-
     <!-- Page Content -->
     <div class="container">
 
@@ -64,10 +81,19 @@
 <div class="col-md-10">
 
                 <div class="thumbnail">
+                    <i>Product Id: {%for star in range(10-product.id|int) %}0{%endfor%}{{product.id}}</i>
+                   
+                    
+
+                    
+                                
+                                
+
+
                     <img class="img-responsive" style="height:400px" src={{product.photo}} alt="">
                     <div class="caption-full">
                         <h4 class="pull-right" id="product_price">${{product.price}}</h4>
-                        <h4><a >{{product.name}}</a>
+                        <h4><a>{{product.name}}</a>
                         </h4>
                         <p>{{product.description}}</p>
                     </div>
@@ -84,9 +110,19 @@
                                 {%endfor%}
                                 </p>
                                 </div>
+                                <form>
+                                <input type="button" id="flip" class="btn btn-info form-control" value="Contact Owner">
+                                <div id="panel">
+                                    <strong>Contact Name: </strong>{{product.customer.name}}<br>
+                                    <strong>Contact Address: </strong>{{product.customer.address}}<br>
+                                    <strong>Contact Email: </strong>{{product.customer.email}}
+                                </div></form>
+
+                                
                                 <form class="form-group" action="{{url_for('add_to_favorites', product_id=product.id)}}" method="post">
                                 <input class="form-control btn btn-primary" type="submit" value="Add to Favorites">
                                 </form>
+
                 <div class="well">
 
                     <div class="row text-right">
@@ -151,7 +187,39 @@
 </div>
 
             </div>
+<div class="row"></div>
 
+<h3>Products You May Like</h3>
+<div class="row">
+{%for item in common_products%}
+  <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <a href={{url_for('product', product_id=item.id)}}>
+                              <img src={{item.photo}} style="height: 200px">
+                            </a>
+                            <div class="caption">
+                                <h4 class="pull-right">${{item.price}}</h4>
+                                <h4><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a>
+                                </h4>
+                                <p>{{item.description}}</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">
+                                {{item.number_of_reviews}} reviews
+                                </p>
+                                <p>{%for star in range(product.stars|int) %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {%endfor%}
+                                {%for star in range(5-product.stars|int) %}
+                                    
+                                <span class="glyphicon glyphicon-star-empty"></span>
+                                {%endfor%}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+  {%endfor%}
+</div>
         </div>
 
     </div>

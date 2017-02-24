@@ -32,11 +32,12 @@
     <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{{url_for('index')}}">MI6 Agency's Drink Shop</a>
+      <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Shopping Cart</a></li>
-      <li><a href={{url_for('checkout')}}><span class="glyphicon glyphicon-check"> </span> Checkout</a></li>
+      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
+      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
+
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
