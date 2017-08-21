@@ -1,230 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
-<script type="text/javascript" src="static/js/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-<title>Yad 2 Music Shop</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% include 'head.html' %}
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class='flash'>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                <ul>
+                    {% for message in messages %}
+                    <li><strong> {{ message }} </strong></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+            </div>
+            <div class="thumbnail">
+                <i>Product Id: {%for zero in range(10-product.id|int) %}0{%endfor%}{{product.id}}</i>
 
 
-    <!-- Bootstrap Core CSS -->
+                <img class="img-responsive" style="height:400px" src={{product.photo}} alt="">
+                <div class="caption-full">
+                    <h4 class="pull-right" id="product_price">{{product.price}}₪</h4>
+                    <h4 style="color : #337ab7">
+                        {{product.name}}
+                    </h4>
+                    <p>{{product.description}}</p>
+                    <p>Uploaded in: {{product.timestamp}}</p>
+                </div>
+                <div class="ratings">
+                    <p class="pull-right">
+                        {{product.comments|length}} reviews
+                    </p>
+                    <p>
+                        {%for i in range(product.stars|int) %}
+                        <i class="fa fa-star"></i>
+                        {%endfor%}
+                        {%if product.stars-product.stars|int>=0.5%}
+                        <i class="fa fa-star-half-o"></i>
+                        {%for i in range(4-(product.stars|int)) %}
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        {%endfor%}
+                        {%else%}
+                        {%for i in range(5-(product.stars|int)) %}
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        {%endfor%}
+                        {%endif%}
+                    </p>
+                </div>
 
 
+                <a class="form-control btn btn-primary"
+                   href="{{url_for('add_to_favorites', product_id=product.id)}}">Add to Favorites</a>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-   
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <!-- <script src="src/bootstrap-rating-input.js"></script> -->
-    <script src="/static/js/bootstrap-rating-input.min.js"></script>
-
-
-<script> 
-$(document).ready(function(){
-    $("#flip").click(function(){
-        $("#panel").slideDown("slow");
-    });
-});
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<style> 
-#panel, #flip {
-    padding: 5px;
-    border: solid 1px #c3c3c3;
-}
-
-#panel {
-    padding: 50px;
-    display: none;
-}
-</style>
-</head>
-
-<body>
-
-<!-- Navigation -->
-    <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
-      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
-
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href={{url_for('are_you_sure_to_log_out')}}><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
-    </ul>
-  </div>
-</nav>
-    <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-
-            <div class="col-md-1"></div>
-<div class="col-md-10">
-
-                <div class="thumbnail">
-                    <i>Product Id: {%for zero in range(10-product.id|int) %}0{%endfor%}{{product.id}}</i>
-                   
-                    
-
-                    
-                                
-                                
-
-
-                    <img class="img-responsive" style="height:400px" src={{product.photo}} alt="">
-                    <div class="caption-full">
-                        <h4 class="pull-right" id="product_price">${{product.price}}</h4>
-                        <h4><a>{{product.name}}</a>
-                        </h4>
-                        <p>{{product.description}}</p>
-                    </div>
-                    <div class="ratings">
-                                <p class="pull-right">
-                                {{product.comments|length}} reviews
-                                </p>
-                                <p>{%for star in range(product.stars|int) %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {%endfor%}
-                                {%for star in range(5-product.stars|int) %}
-                                    
-                                <span class="glyphicon glyphicon-star-empty"></span>
-                                {%endfor%}
-                                </p>
-                                </div>
-                                <form>
-                                <input type="button" id="flip" class="btn btn-info form-control" value="Contact Owner">
-                                <div id="panel">
-                                    <strong>Contact Name: </strong>{{product.customer.name}}<br>
-                                    <strong>Contact Address: </strong>{{product.customer.address}}<br>
-                                    <strong>Contact Email: </strong>{{product.customer.email}}
-                                </div></form>
-
-                                
-                                <form class="form-group" action="{{url_for('add_to_favorites', product_id=product.id)}}" method="post">
-                                <input class="form-control btn btn-primary" type="submit" value="Add to Favorites">
-                                </form>
 
                 <div class="well">
 
                     <div class="row text-right">
 
-<div class="col-sm-1"></div>
-<div class="col-md-10">
-                <div class="widget-area no-padding blank">
-                <div class="status-upload form-group">
-                  <form class="form-horizontal" method="post" action={{url_for('product',product_id=product.id)}}>
-                    <textarea type="textarea" class="form-control" name="text" placeholder="What do you think about this product" ></textarea><br>
-                    <p class="pull-left">Your Rating: <input type="number" name="rating" id="rating1" class="rating"></p><br>
-                    <button type="submit" name="submit" class="btn btn-success green"><i class="glyphicon glyphicon-share-alt"></i> Leave a Review</button>
-                  </form>
-                </div><!-- Status Upload  -->
-              </div><!-- Widget Area -->
-            </div>
-                    </div>
-
- <hr style="border-color: darkgrey">
- {%if product.comments==[]%}
- <div class="col-md-1"></div>
- No comments yet. Be the first one!
- {%else%}
-{%for comment in product.comments[::-1]%}
-<div class="row">
-
-<div class="col-sm-1">
-
-<div class="thumbnail">
-<img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-</div><!-- /thumbnail -->
-</div><!-- /col-sm-1 -->
-
-<div class="col-sm-10">
-<div class="panel panel-default">
-<div class="panel-heading">
-<strong class="pull-left">{{comment.customer.name}}</strong>
-<div class="col-sm-1"></div>
-                                
-                                {%for star in range(comment.stars|int) %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {%endfor%}
-                                {%for star in range(5-comment.stars|int) %}
-                                    
-                                <span class="glyphicon glyphicon-star-empty"></span>
-                                {%endfor%}
-                               
-
- <span class="text-muted pull-right">{{comment.timestamp}}</span>
-</div>
-<div class="panel-body">
-<p class="col-lg-12"><font>{{comment.text}}</font></p>
-</div><!-- /panel-body -->
-</div><!-- /panel panel-default -->
-</div><!-- /col-sm-5 -->
-
-
-</div><!-- /row -->
-                    <hr>
-                    {%endfor%}
-{%endif%}
-</div>
-
-            </div>
-<div class="row"></div>
-
-<h3>Similar Products</h3>
-<div class="row">
-{%if common_products==[]%}
-<div class="col-sm-4 col-lg-4 col-md-4">
-Sorry, this product has no similar products yet.</div>
-{%else%}
-{%for item in common_products%}
-  <div class="col-sm-4 col-lg-4 col-md-4">
-                        <div class="thumbnail">
-                            <a href={{url_for('product', product_id=item.id)}}>
-                              <img src={{item.photo}} style="height: 200px">
-                            </a>
-                            <div class="caption">
-                                <h4 class="pull-right">${{item.price}}</h4>
-                                <h4><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a>
-                                </h4>
-                                <p>{{item.description}}</p>
-                            </div>
-                            <div class="ratings">
-                                <p class="pull-right">
-                                {{item.number_of_reviews}} reviews
-                                </p>
-                                <p>{%for star in range(product.stars|int) %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {%endfor%}
-                                {%for star in range(5-product.stars|int) %}
-                                    
-                                <span class="glyphicon glyphicon-star-empty"></span>
-                                {%endfor%}
-                                </p>
-                            </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-md-10">
+                            <div class="widget-area no-padding blank">
+                                <div class="status-upload form-group">
+                                    <form class="form-horizontal" method="post"
+                                          action={{url_for('product',product_id=product.id)}}>
+                                            <textarea class="form-control" name="text"
+                                                      placeholder="What do you think about this product"></textarea><br>
+                                        <p class="pull-left">Your Rating: <input type="number" name="rating"
+                                                                                 id="rating1" class="rating"></p>
+                                        <br>
+                                        <button type="submit" name="submit" class="btn btn-success green"><i
+                                                class="glyphicon glyphicon-share-alt"></i> Leave a Review
+                                        </button>
+                                    </form>
+                                </div><!-- Status Upload  -->
+                            </div><!-- Widget Area -->
                         </div>
                     </div>
-  {%endfor%}
-  {%endif%}
-</div>
+
+                    <hr style="border-color: darkgrey">
+                    {%if product.comments==[]%}
+                    <div class="col-md-1"></div>
+                    No comments yet. Be the first one!
+                    {%else%}
+                    {%for comment in product.comments[::-1]%}
+                    <div class="row">
+
+                        <div class="col-sm-1">
+
+                            <div class="thumbnail">
+                                <img class="img-responsive user-photo"
+                                     src="{{comment.customer.photo}}">
+                            </div><!-- /thumbnail -->
+                        </div><!-- /col-sm-1 -->
+
+                        <div class="col-sm-10">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong class="pull-left">{{comment.customer.name}}</strong>
+                                    <div class="col-sm-1"></div>
+
+                                    {%for star in range(comment.stars|int) %}
+                                    <i class="fa fa-star"></i>
+                                    {%endfor%}
+                                    {%for star in range(5-comment.stars|int) %}
+
+                                    <i class="fa fa-star-o"></i>
+                                    {%endfor%}
+
+
+                                    <span class="text-muted pull-right">{{comment.timestamp}}</span>
+                                </div>
+                                <div class="panel-body">
+                                    <p class="col-lg-12"><font>{{comment.text}}</font></p>
+                                </div><!-- /panel-body -->
+                            </div><!-- /panel panel-default -->
+                        </div><!-- /col-sm-5 -->
+
+
+                    </div><!-- /row -->
+                    <hr>
+                    {%endfor%}
+                    {%endif%}
+                </div>
+
+            </div>
+            <div class="row"></div>
+
+            <h3>Similar Products</h3>
+            <div class="row">
+                {%if common_products==[]%}
+                <div class="col-sm-4 col-lg-4 col-md-4">
+                    Sorry, this product has no similar products yet.
+                </div>
+                {%else%}
+                {%for item in common_products%}
+                <div class="col-sm-4 col-lg-4 col-md-4">
+                    <div class="thumbnail">
+                        <a href={{url_for('product', product_id=item.id)}}>
+                            <img src={{item.photo}} style="height: 200px">
+                        </a>
+                        <div class="caption">
+                            <h4 class="pull-right">₪{{item.price}}</h4>
+                            <h4><a href={{url_for('product', product_id=item.id)}}>{{item.name}}</a>
+                            </h4>
+                            <p>{{item.description}}</p>
+                        </div>
+                        <div class="ratings">
+                            <p class="pull-right">
+                                {{item.number_of_reviews}} reviews
+                            </p>
+                            <p>{%for star in range(product.stars|int) %}
+                                <i class="fa fa-star"></i>
+                                {%endfor%}
+                                {%for star in range(5-product.stars|int) %}
+                                <i class="fa fa-star-o"></i>
+                                {%endfor%}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+                {%endif%}
+            </div>
         </div>
 
     </div>
@@ -237,19 +183,19 @@ Sorry, this product has no similar products yet.</div>
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                     <p>Copyright &copy; Eilon Goldberg</p>
+                    <p>Copyright &copy; Eilon Goldberg</p>
                 </div>
             </div>
         </footer>
 
     </div>
     <!-- /.container -->
+</div>
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
 
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
 
 </body>
 

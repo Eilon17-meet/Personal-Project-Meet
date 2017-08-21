@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
-<script type="text/javascript" src="static/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
+    <script type="text/javascript" src="static/js/bootstrap.js"></script>
 
-<title>MI6 Agency's Drink Shop</title>
+    <title>MI6 Agency's Drink Shop</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,16 +17,15 @@
     <!-- Bootstrap Core CSS -->
 
 
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
-<script type="text/javascript">
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+    <script type="text/javascript">
  
            $(document).ready(function() {
             $('#reg_form').bootstrapValidator({
@@ -172,133 +171,163 @@
                 });
         });
 
-</script>
+
+
+    </script>
 </head>
 
 <body>
 
 <!-- Navigation -->
-    <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
-      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span>
+                Favorites</a></li>
+            <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload
+                Product</a></li>
 
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href={{url_for('are_you_sure_to_log_out')}}><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
-    </ul>
-  </div>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <li><a href={{url_for('are_you_sure_to_log_out')}}><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
+            </li>
+        </ul>
+    </div>
 </nav>
 <br><br><br>
-    <!-- Page Content -->
-    <div class="container">
+<!-- Page Content -->
+<div class="container">
 
-        <div class="row">
+    <div class="row">
 
-<div class="col-md-1"></div>
-            <div class="col-md-10"><h1> New Customer </h1>
+        <div class="col-md-1"></div>
+        <div class="col-md-10"><h1> New Customer </h1>
 
-<div class = 'flash'>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
+            <div class='flash'>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
 
-        <ul>
-        {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
+                <ul>
+                    {% for message in messages %}
+                    <li><strong> {{ message }} </strong></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
 
-</div>
+            </div>
 
 
-<form class="form-horizontal" action="{{ url_for('newCustomer') }}" method="post"  id="reg_form">
-    <fieldset>
+            <form enctype="multipart/form-data" class="form-horizontal" action="{{ url_for('newCustomer') }}" method="post" id="reg_form">
+                <fieldset>
 
-  <div class="form-group">
-        <label class="col-md-4 control-label">First Name</label>
-        <div class="col-md-6  inputGroupContainer">
-          <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input  name="first_name" placeholder="First Name" class="form-control"  type="text">
-          </div>
-        </div>
-      </div>
-      
-      <!-- Text input-->
-      
-      <div class="form-group">
-        <label class="col-md-4 control-label" >Last Name</label>
-        <div class="col-md-6  inputGroupContainer">
-          <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input name="last_name" placeholder="Last Name" class="form-control"  type="text">
-          </div>
-        </div>
-      </div>
-      
-        
-   <!-- Text input-->
-      
-      <div class="form-group">
-        <label class="col-md-4 control-label">Address</label>
-        <div class="col-md-6  inputGroupContainer">
-          <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-            <input name="address" placeholder="Your Address" class="form-control" type="text">
-          </div>
-        </div>
-      </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">First Name</label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-user"></i></span>
+                                <input name="first_name" placeholder="First Name" class="form-control" type="text">
+                            </div>
+                        </div>
+                    </div>
 
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="col-md-4 control-label">E-Mail</label>
-        <div class="col-md-6  inputGroupContainer">
-          <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-            <input name="email" placeholder="E-Mail Address" class="form-control"  type="text">
-          </div>
-        </div>
-      </div>
-      
-      <div class="form-group has-feedback">
-            <label for="password"  class="col-md-4 control-label">
-                    Password
-                </label>
-                <div class="col-md-6  inputGroupContainer">
-                <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-            <input class="form-control" id="userPw" type="password" placeholder="password" 
-                       name="password" data-minLength="5"
-                       data-error="some error"
-                       required/>
-                <span class="glyphicon form-control-feedback"></span>
-                <span class="help-block with-errors"></span>
-                </div>
-             </div>
-        </div>
-     
-        <div class="form-group has-feedback">
-            <label for="confirmPassword"  class="col-md-4 control-label">
-                   Confirm Password
-                </label>
-                 <div class="col-md-6  inputGroupContainer">
-                <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-            <input class="form-control {$borderColor}" id="userPw2" type="password" placeholder="Confirm password" 
-                       name="confirmPassword" data-match="#confirmPassword" data-minLength="5"
-                       data-match-error="some error 2"
-                       required/>
-                <span class="glyphicon form-control-feedback"></span>
-                <span class="help-block with-errors"></span>
-             </div>
-             </div>
-        </div>
-    <div class="col-md-2"></div>
-  <div class="col-md-9">
-  <button type="submit" class="btn btn-primary btn-block" >Create Account <span class="glyphicon glyphicon-send"></span></button></div></fieldset>
+                    <!-- Text input-->
 
-</form>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Last Name</label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-user"></i></span>
+                                <input name="last_name" placeholder="Last Name" class="form-control" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Text input-->
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Address</label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-home"></i></span>
+                                <input name="address" placeholder="Your Address" class="form-control" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">E-Mail</label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-envelope"></i></span>
+                                <input name="email" placeholder="E-Mail Address" class="form-control" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label for="password" class="col-md-4 control-label">
+                            Password
+                        </label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-home"></i></span>
+                                <input class="form-control" id="userPw" type="password" placeholder="password"
+                                       name="password" data-minLength="5"
+                                       data-error="some error"
+                                       required/>
+                                <span class="glyphicon form-control-feedback"></span>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label for="confirmPassword" class="col-md-4 control-label">
+                            Confirm Password
+                        </label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-home"></i></span>
+                                <input class="form-control {$borderColor}" id="userPw2" type="password"
+                                       placeholder="Confirm password"
+                                       name="confirmPassword" data-match="#confirmPassword" data-minLength="5"
+                                       data-match-error="some error 2"
+                                       required/>
+                                <span class="glyphicon form-control-feedback"></span>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label for="pic" class="col-md-4 control-label">
+                            Photo
+                        </label>
+                        <div class="col-md-6  inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i
+                                    class="glyphicon glyphicon-user"></i></span>
+                                <input class="form-control {$borderColor}" type="file" id="pic"
+                                       name="pic"/>
+                                <span class="glyphicon form-control-feedback"></span>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-9">
+                        <button type="submit" class="btn btn-primary btn-block">Create Account <span
+                                class="glyphicon glyphicon-send"></span></button>
+                    </div>
+                </fieldset>
+
+            </form>
 
 </html>

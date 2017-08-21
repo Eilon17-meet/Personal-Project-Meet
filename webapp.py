@@ -1,17 +1,17 @@
 import os
-import random
-import string
 
-from datetime import datetime
 from flask import *
 from flask import session as login_session
-from model import *
 from werkzeug.utils import secure_filename
+
+from model import *
 
 app = Flask(__name__)
 app.secret_key = "MY_SUPER_SECRET_KEY"
-UPLOAD_FOLDER = 'static/pic/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_PRODUCT_PIC_FOLDER = 'static/pic/product_pics/'
+UPLOAD_USER_PIC_FOLDER = 'static/pic/user_pics/'
+app.config['UPLOAD_PRODUCT_PIC_FOLDER'] = UPLOAD_PRODUCT_PIC_FOLDER
+app.config['UPLOAD_USER_PIC_FOLDER'] = UPLOAD_USER_PIC_FOLDER
 
 engine = create_engine('sqlite:///database.db')
 Base.metadata.bind = engine
@@ -59,8 +59,8 @@ def inventory():
                 del login_session['name']
                 del login_session['email']
                 del login_session['id']
-    items = session.query(Product).all()
-    return render_template("inventory.html", items=items[::-1])
+    products = session.query(Product).all()
+    return render_template("inventory.html", products=products[::-1])
 
 
 @app.route('/user/<int:user_id>')
@@ -85,7 +85,7 @@ def show_post(post_id):
 def login():
     if 'id' in login_session:
         if login_session['id'] != 1:
-            flash('You are already logged in, '+login_session['name'])
+            flash('You are already logged in, ' + login_session['name'])
             return redirect(url_for('index'))
     if request.method == 'GET':
         return render_template("login.html")
@@ -129,36 +129,49 @@ def newCustomer():
         email = request.form['email']
         password = request.form['password']
         address = request.form['address']
-        if name == '' or email == '' or password == '' or address == '':
+        image = request.files['pic']
+
+        if image.filename == '' or name == '' or email == '' or password == '' or address == '':
             flash("Your form is missing arguments")
             return redirect(url_for('newCustomer'))
-        if session.query(Customer).filter_by(email = email).first() is not None or email==admin_email:
+        if session.query(Customer).filter_by(email=email).first() is not None or email == admin_email:
             flash("A user with this email address already exists")
             return redirect(url_for('newCustomer'))
-        customer = Customer(name = name, email=email, address = address, deleted=False)
+        filename = image.filename
+        x = 0
+        prefix = filename.split('.')[:-1]
+        if type(prefix) == str:
+            prefix = [prefix]
+        suffix = filename.split('.')[-1]
+        while filename in os.listdir(UPLOAD_PRODUCT_PIC_FOLDER):
+            x += 1
+            filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
+        path = UPLOAD_USER_PIC_FOLDER + secure_filename(filename)
+        image.save(path)
+        customer = Customer(name=name, email=email, address=address, deleted=False, photo='/' + path)
         customer.hash_password(password)
         session.add(customer)
         session.commit()
-        #login
+        # login
         login_session['name'] = customer.name
         login_session['email'] = customer.email
         login_session['id'] = customer.id
-        flash ('You Are Successfully Signed Up! Welcome, %s.' % customer.name)
-        return redirect(url_for('inventory',customer_id=session.query(Customer).all()[-1].id))
+        flash('You Are Successfully Signed Up! Welcome, %s.' % customer.name)
+        return redirect(url_for('inventory', customer_id=session.query(Customer).all()[-1].id))
     else:
         return render_template('newCustomer.html')
 
 
-@app.route("/product/<int:product_id>", methods=['GET','POST'])
+@app.route("/product/<int:product_id>", methods=['GET', 'POST'])
 def product(product_id):
     product = session.query(Product).filter_by(id=product_id).one()
     if request.method == 'GET':
         all_products = session.query(Product).all()
         all_products.remove(product)
-        all_products_dic={}
+        all_products_dic = {}
         for product_name in all_products:
-            all_products_dic[str(product_name)]=product_name
-        all_tags=[]
+            all_products_dic[str(product_name)] = product_name
+        all_tags = []
         for product_to_check in all_products:
             for tag in product_to_check.tags.split():
                 if tag not in all_tags:
@@ -166,7 +179,7 @@ def product(product_id):
 
         tags = product.tags.split()
 
-        number_of_similar_products = 6  #Number of how many similar products to show on the page.
+        number_of_similar_products = 6  # Number of how many similar products to show on the page.
 
         all_common_products = []
         common_tags_dic = {}
@@ -180,7 +193,8 @@ def product(product_id):
                         else:
                             common_tags_dic[str(product_to_check)] += 1
 
-        common_tags_dic_list = sorted(common_tags_dic, key=common_tags_dic.__getitem__, reverse=True)[:number_of_similar_products]
+        common_tags_dic_list = sorted(common_tags_dic, key=common_tags_dic.__getitem__, reverse=True)[
+                               :number_of_similar_products]
 
         common_products = []
 
@@ -188,6 +202,7 @@ def product(product_id):
             common_products.append(all_products_dic[i])
 
         return render_template('product page.html', product=product, common_products=common_products)
+
     elif request.method == 'POST':
         if 'id' not in login_session:
             flash("You must be logged in order to preform this action")
@@ -200,23 +215,24 @@ def product(product_id):
         text = request.form['text']
         stars = request.form['rating']
         try:
-            stars=int(stars)
+            stars = int(stars)
         except:
-            stars=0
-        new_comment=Comment(text=text, stars=stars,timestamp=datetime.now(),product_id=product_id,customer_id=login_session['id'])
+            stars = 0
+        new_comment = Comment(text=text, stars=stars, timestamp=datetime.now(), product_id=product_id,
+                              customer_id=login_session['id'])
         session.add(new_comment)
         session.commit()
-        all_commnents=session.query(Comment).all()
-        total_stars=0
-        for comment in all_commnents:
-            total_stars+=comment.stars
-        avarge=total_stars/len(all_commnents)
-        product.stars=avarge
+        all_comments = session.query(Comment).all()
+        total_stars = 0
+        for comment in all_comments:
+            total_stars += comment.stars
+        average = 1.0 * total_stars / len(all_comments)
+        product.stars = average
         flash('Comment successfuly added!')
-        return redirect(url_for('product',product_id=product_id))
+        return redirect(url_for('product', product_id=product_id))
 
 
-@app.route("/product/<int:product_id>/add_to_favorites", methods=['POST'])
+@app.route("/product/<int:product_id>/add_to_favorites")
 def add_to_favorites(product_id):
     if 'id' not in login_session:
         flash("You must be logged in order to perform this action")
@@ -228,15 +244,24 @@ def add_to_favorites(product_id):
     else:
         favorite = Favorite(product_id=product_id, customer_id=customer.id)
         customer.favorites.append(favorite)
-        session.add_all([favorite,customer])
+        session.add_all([favorite, customer])
         session.commit()
         flash("Successfuly added to Favorites")
         return redirect(url_for('favorites'))
 
 
-@app.route('/soppingCart')
+@app.route('/shoppingCart')
 def shoppingCart():
     return redirect(url_for('favorites'))
+
+
+@app.route('/my_products')
+def my_products():
+    if 'id' not in login_session:
+        flash("You must be logged in to perform this action.")
+        return redirect(url_for('login'))
+    products = session.query(Product).filter_by(customer_id=login_session['id']).all()
+    return render_template('my_products.html', products=products)
 
 
 @app.route("/favorites")
@@ -253,65 +278,32 @@ def removeFromCart(product_id):
     if 'id' not in login_session:
         flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
-    favorite=session.query(Favorite).filter_by(customer_id=login_session['id']).filter_by(product_id=product_id).one()
+    favorite = session.query(Favorite).filter_by(customer_id=login_session['id']).filter_by(product_id=product_id).one()
     session.delete(favorite)
     session.commit()
     flash("Item deleted from favorites successfully.")
     return redirect(url_for('favorites'))
 
 
-@app.route("/checkout", methods = ['GET', 'POST'])
-def checkout():
-    if 'id' not in login_session:
-        flash("You must be logged in to perform this action.")
-        return redirect(url_for('login'))
-    shoppingCart=session.query(ShoppingCart).filter_by(customer_id=login_session['id']).one()
-    if request.method=='POST':
-        order=Order(customer_id=login_session['id'],confirmation=generateConfirmationNumber())
-        order.total=calculateTotal(shoppingCart)
-        for item in shoppingCart.products:
-            assoc=OrdersAssociation(product=item.product,product_qty=item.quantity)
-            order.products.append(assoc)
-            session.delete(item)
-        session.add_all([order,shoppingCart])
-        session.commit()
-        return redirect(url_for('confirmation', confirmation=order.confirmation))
-    elif request.method=='GET':
-        return render_template('checkout.html',shoppingCart=shoppingCart,total=calculateTotal(shoppingCart))
-
-
-@app.route("/confirmation/<confirmation>")
-def confirmation(confirmation):
-    if 'name' not in login_session:
-        flash("You must be logged in to perform this action.")
-        return redirect(url_for('login'))
-    order = session.query(Order).filter_by(confirmation=confirmation).one()
-    return render_template('confirmation.html', order=order)
-
-
-@app.route('/logout/are_you_sure', methods = ['GET', 'POST'])
+@app.route('/logout/are_you_sure', methods=['GET', 'POST'])
 def are_you_sure_to_log_out():
     if 'name' not in login_session:
         flash("You must be logged in order to log out.")
         return redirect(url_for('login'))
-    if request.method=='GET':
+    if request.method == 'GET':
         return render_template('are_you_sure.html')
-    elif request.method=='POST':
-        if request.form['choice']=='yes':
+    elif request.method == 'POST':
+        if request.form['choice'] == 'yes':
             return redirect(url_for('logout'))
         else:
             return redirect(url_for('inventory'))
 
 
-@app.route('/upload_page', methods = ['GET','POST'])
+@app.route('/upload_page', methods=['GET', 'POST'])
 def upload_page():
     if 'id' not in login_session:
         flash("You must be logged in order to preform this action")
         return redirect(url_for('login'))
-    else:
-        if login_session['id']==1:
-            flash("You must be logged in order to preform this action")
-            return redirect(url_for('login'))
 
     if request.method == 'GET':
         all_products = session.query(Product).all()
@@ -328,28 +320,42 @@ def upload_page():
         product_name = request.form['product_name']
         description = request.form['description']
         tags = request.form['tags']
-        tags += ' ' + name.lower()
-        price=request.form['price']
+        tags += ' ' + product_name.lower()
+        price = request.form['price']
         if image.filename == '' or product_name == '' or description == '' or tags == '' or price == '':
             flash("Your form is missing arguments")
             flash('You must have a photo, a name, a description, a price and at least one tag for your product')
             return redirect(url_for('upload_page'))
-        filename=image.filename
-        x=0
-        prefix=filename.split('.')[:-1]
-        if type(prefix)==str:
-            prefix=[prefix]
-        suffix=filename.split('.')[-1]
-        while filename in os.listdir(UPLOAD_FOLDER):
-            x+=1
-            filename=secure_filename(''.join(word+'.' for word in prefix)[:-1]+'('+str(x)+').'+suffix)
-        path = UPLOAD_FOLDER+secure_filename(filename)
+        try:
+            price = str(float(price))
+        except:
+            flash('Invalid Price')
+            return redirect(url_for('upload_page'))
+        if len(price.split('.')[1]) == 1:
+            price += '0'
+        elif len(price.split('.')[1]) > 2:
+            pl = price.split('.')
+            while len(pl[1]) != 2:
+                pl[1] = pl[1][:-1]
+            price = ''.join(i + '.' for i in pl)[:-1]
+
+        filename = image.filename
+        x = 0
+        prefix = filename.split('.')[:-1]
+        if type(prefix) == str:
+            prefix = [prefix]
+        suffix = filename.split('.')[-1]
+        while filename in os.listdir(UPLOAD_PRODUCT_PIC_FOLDER):
+            x += 1
+            filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
+        path = UPLOAD_PRODUCT_PIC_FOLDER + secure_filename(filename)
         image.save(path)
 
         '''if image =='' or email =='' or password =='' or address=='':
             flash("Your form is missing arguments")
             return redirect(url_for('newCustomer'))'''
-        new_product = Product(name=product_name, timestamp=datetime.now(), description=description, photo='/'+path, price=price, tags=tags, stars=0,customer_id=login_session['id'])
+        new_product = Product(name=product_name, timestamp=datetime.now(), description=description, photo='/' + path,
+                              price=price, tags=tags, stars=0, customer_id=login_session['id'])
         session.add(new_product)
         session.commit()
         return redirect(url_for('inventory'))
@@ -407,12 +413,13 @@ def delete_user(user_id):
     if not login_session['id'] == 1:
         flash("You Are Not Allowed To Get To This Page!")
         return redirect(url_for('inventory'))
-    user=session.query(Customer).filter_by(id=user_id).one()
-    user.deleted=True
-    user.when_deleted=datetime.now()
+    user = session.query(Customer).filter_by(id=user_id).one()
+    user.deleted = True
+    user.when_deleted = datetime.now()
     session.commit()
-    flash('User Deleted Successfuly!')
-    return redirect(url_for('admin_page',admin_page=login_session['email']))
+    flash('User Deleted Successfully!')
+    return redirect(url_for('admin_page', admin_email=admin_email))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

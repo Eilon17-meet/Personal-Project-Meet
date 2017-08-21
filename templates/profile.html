@@ -1,120 +1,108 @@
 <html lang="en">
 
-<head>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
-<script type="text/javascript" src="static/js/bootstrap.js"></script>
-
-<title>MI6 Agency's Drink Shop</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% include 'head.html' %}
 
 
-    <!-- Bootstrap Core CSS -->
+<!-- Page Content -->
+<div class="container">
 
+    <div class="row">
 
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h1>Profile for User: {{customer.email}}</h1>
+            <br>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+            <h3>ID:</h3> {{customer.id}}<br>
+            <h3>Name:</h3> {{customer.name}}<br>
+            <h3>Address:</h3> {{customer.address}}<br>
+            <h3>Email:</h3> {{customer.email}}<br>
+            <h3>Created in:</h3> {{customer.when_created}}<br>
+            <h3>Products Uploaded:</h3>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stars</th>
+                    <th>When Uploaded</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%for product in customer.products%}
+                <tr>
+                    <td>{{product.id}}</td>
+                    <td><a href="{{url_for('product', product_id=product.id)}}">{{product.name}}</a></td>
+                    <td>${{product.price}}</td>
+                    <td>{{product.stars}}</td>
+                    <td>{{product.timestamp}}</td>
+                </tr>
+                {%endfor%}
+                </tbody>
+            </table>
+            <br>
+            <h3>Favorite Products:</h3>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stars</th>
+                    <th>When Added</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%for fav in customer.favorites%}
+                <tr>
+                    <td>{{fav.product.id}}</td>
+                    <td><a href="{{url_for('product', product_id=fav.product.id)}}">{{fav.product.name}}</a></td>
+                    <td>${{fav.product.price}}</td>
+                    <td>{{fav.product.stars}}</td>
+                    <td>{{fav.product.timestamp}}</td>
+                </tr>
+                {%endfor%}
+                </tbody>
 
-</head>
+            </table>
+            <br>
+            <h3>Comments:</h3>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Text</th>
+                    <th>Stars</th>
+                    <th>Product</th>
+                    <th>When Posted</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%for comment in customer.comments%}
+                <tr>
+                    <td>{{comment.id}}</td>
+                    <td>{{comment.text}}</td>
+                    <td>{{comment.stars}}</td>
+                    <td><a href="{{url_for('product', product_id=comment.product.id)}}">{{comment.product.name}}</a></td>
+                    <td>{{comment.timestamp}}</td>
+                </tr>
+                {%endfor%}
+                </tbody>
+            </table>
+            <br><br>
+            {%if customer.deleted%}
+            <h3>Deleted in:</h3>{{customer.when_deleted}}<br>
+            {%endif%}
 
-<body>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="{{url_for('index')}}">MI6 Agency's Drink Shop</a>
+        </div>
     </div>
-    <ul class="nav navbar-nav">
 
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-    </ul>
-  </div>
-</nav>
-
-    <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-
-<div class="col-md-1"></div>
-            <div class="col-md-10">
-<h1>Profile for User: {{customer.email}}</h1>
-<br>
-
-<h3>ID:</h3> {{customer.id}}<br>
-<h3>Name:</h3> {{customer.name}}<br>
-<h3>Address:</h3> {{customer.address}}<br>
-<h3>Email:</h3> {{customer.email}}<br>
-<h3>Created in:</h3> {{customer.when_created}}<br>
-<h3>Products Uploaded:</h3>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Stars</th>
-        <th>When Uploaded</th>
-    </tr>
-    </thead>
-<tbody>
-    {%for product in customer.products%}
-    <tr>
-        <td>{{product.id}}</td>
-        <td><a href={{url_for('product', product_id=product.id)}}>{{product.name}}</a></td>
-        <td>${{product.price}} </td>
-        <td>{{product.stars}}</td>
-        <td>{{product.timestamp}}</td>
-    </tr>
-{%endfor%}</tbody>
-</table><br>
-<h3>Favorite Products:</h3>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Stars</th>
-        <th>When Uploaded</th>
-    </tr>
-    </thead>
-<tbody>
-    {%for fav in customer.favorites%}
-    <tr>
-        <td>{{fav.product.id}}</td>
-        <td><a href={{url_for('product', product_id=fav.product.id)}}>{{fav.product.name}}</a></td>
-        <td>${{fav.product.price}} </td>
-        <td>{{fav.product.stars}}</td>
-        <td>{{fav.product.timestamp}}</td>
-    </tr>
-{%endfor%}</tbody>
-</table>
-
-<br><br>
-{%if customer.deleted%}
-<h3>Deleted in:</h3>{{customer.when_deleted}}<br>
-{%endif%}
-
-</div>
-</div>
-
-<br>
-{%if not customer.deleted%}
-<div class="form-group">
-<form action={{url_for('are_you_sure_to_delete', user_id=customer.id)}} method="get"><input class="form-control btn btn-danger" type="submit" value="Delete User"></form></div>
+    <br>
+    {%if not customer.deleted%}
+    <div class="form-group">
+        <form action="{{url_for('are_you_sure_to_delete', user_id=customer.id)}}"><input
+                class="form-control btn btn-danger" type="submit" value="Delete User"></form>
+    </div>
 </div>
 {%endif%}

@@ -1,95 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
-<script type="text/javascript" src="static/js/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-<title>Yad 2 Music Shop</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% include 'head.html' %}
 
+<!-- Page Content -->
+<div class="container">
 
-    <!-- Bootstrap Core CSS -->
+    <div class="row">
 
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h1>Upload Product</h1>
+            <div class='flash'>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
 
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-<!-- Navigation -->
-    <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href={{url_for('inventory')}}>Yad 2 Music Shop</a>
+                <ul>
+                    {% for message in messages %}
+                    <li><strong> {{ message }} </strong></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <form action="{{ url_for('upload_page',customer_id=customer_id) }}" method='post'
+                  enctype="multipart/form-data">
+                <h4>Product Info:</h4>
+                Name Of The Product:<br>
+                <input class="form-control" type="text" name="product_name" placeholder="Product's Name"><br>
+                Description:<br>
+                <input class="form-control" type="text" name="description" placeholder="Product's Description"><br>
+                Tags:<br>
+                <input class="form-control" type="text" name="tags" placeholder="Separate Tags With Spaces"><br>
+                Photo:<br>
+                <input type="file" name="pic"><br>
+                Price:<br>
+                <table>
+                    <tr>
+                        <td>$</td>
+                        <td class="col-lg-12"><input class="form-control" type="number" min="0" step="0.01" name="price"
+                                                     placeholder="Price In American Dollars"></td>
+                    </tr>
+                </table>
+                <br><br>
+                <div class="col-md-12">
+                    <input class="form-control" type="submit" value="Upload Product">
+                </div>
+            </form>
+        </div>
     </div>
-    <ul class="nav navbar-nav">
-      <li><a href={{url_for('shoppingCart')}}><span class="glyphicon glyphicon-shopping-cart"> </span> Favorites</a></li>
-      <li><a href={{url_for('upload_page')}}><span class="glyphicon glyphicon-cloud-upload"> </span> Upload Product</a></li>
-
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href={{url_for('newCustomer')}}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href={{url_for('login')}}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href={{url_for('are_you_sure_to_log_out')}}><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
-    </ul>
-  </div>
-</nav>
-    <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-
-<div class="col-md-1"></div>
-<div class="col-md-10">
-<h1>Upload Product</h1>
-<div class = 'flash'>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-
-        <ul>
-        {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
 </div>
-<form action="{{ url_for('upload_page',customer_id=customer_id) }}" method = 'post' enctype="multipart/form-data" >
-<h4>Product Info:</h4>
-  Name Of The Product:<br>
-  <input class="form-control" type="text" name="product_name" placeholder="Product's Name"><br>
-  Description:<br>
-  <input class="form-control" type="text" name="description" placeholder="Product's Description"><br>
-  Tags:<br>
-  <input class="form-control" type="text" name="tags" placeholder="Separate Tags With Spaces"><br>
-  Photo:<br>
-  <input type="file" name="pic"><br>
-  Price:<br>
-  <table>
-  <tr>
-    <td>$</td>
-    <td class="col-lg-12"><input class="form-control" type="number" step="0.01" name="price" placeholder="Price In American Dollars"></td>
-  </tr>
-</table><br><br>
-  <div class="col-md-12">
-   <input class="form-control" type="submit" value="Upload Product">
- </div></div>
-</form>
-
-</div>
-
 </body>
 </html>
