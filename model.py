@@ -35,7 +35,7 @@ class Customer(Base):
     comments = relationship("Comment", back_populates="customer")
     products = relationship("Product", back_populates="customer")
     favorites = relationship("Favorite", back_populates="customer")
-    photo = Column(String, default='https://ssl.gstatic.com/accounts/ui/avatar_2x.png')
+    photo = Column(String, default='static\pic\user_pics')
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
