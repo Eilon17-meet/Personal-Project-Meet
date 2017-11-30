@@ -21,7 +21,7 @@ products = [
     # {'name':'Desert Eagel', 'description':wikipedia.summary(wikipedia.search('imi desert eagle')[0],sentences=1), 'photo':'http://www.gunsandammo.com/files/2016/01/desert-eagle-lightweight-1.jpg', 'price':'1599.99', 'tags':'pistol gun handgun'},
 
     {'name': 'Ibanez RG6PCMLTD', 'description': 'In Blue Reef Gradation',
-     'photo': '/static/pic/product_pics/guitar example.jpg', 'price': '1299.99',
+     'photo': '/static/pic/product_pics/guitar_example.jpg', 'price': '1299.99',
      'tags': 'guitar music '},
     # {'name':'Lemon Lime', 'description':'Obey your Thirst', 'photo':'https://i5.walmartimages.com/asr/f6bbc322-83c3-49d9-a9b6-35f05aea0226_1.e37e538746a60bad395e7a0b19ab4f6c.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF', 'price':'2.99','tags':'drink fruit'},
     # {'name':'Tutti Fruiti', 'description':'Tropical Fruit Punch', 'photo':'https://i5.walmartimages.com/asr/859eac0f-f23f-4bf3-b190-91a97d495bbe_1.1376acaadf8d89cb4a12f42fd0318b53.jpeg?odnHeight=450&odnWidth=450&odnBg=FFFFFF', 'price':'1.89','tags':'drink fruit'},
