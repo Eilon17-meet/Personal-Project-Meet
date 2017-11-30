@@ -143,7 +143,7 @@ def newCustomer():
         if type(prefix) == str:
             prefix = [prefix]
         suffix = filename.split('.')[-1]
-        while filename in os.listdir(UPLOAD_PRODUCT_PIC_FOLDER):
+        while filename in os.listdir(UPLOAD_USER_PIC_FOLDER):
             x += 1
             filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
         path = UPLOAD_USER_PIC_FOLDER + secure_filename(filename)
