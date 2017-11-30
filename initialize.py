@@ -46,3 +46,4 @@ for product in products:
     print(product['name'] + ': ' + str(newProduct.stars))
 session.commit()
 print('\nNumber Of Products: ' + str(len(products)))
+print('Don\'t forget to delete uploaded pics!')
