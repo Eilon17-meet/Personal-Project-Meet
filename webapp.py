@@ -131,23 +131,26 @@ def newCustomer():
         address = request.form['address']
         image = request.files['pic']
 
-        if image.filename == '' or name == '' or email == '' or password == '' or address == '':
+        if name == '' or email == '' or password == '' or address == '':
             flash("Your form is missing arguments")
             return redirect(url_for('newCustomer'))
         if session.query(Customer).filter_by(email=email).first() is not None or email == admin_email:
             flash("A user with this email address already exists")
             return redirect(url_for('newCustomer'))
-        filename = image.filename
-        x = 0
-        prefix = filename.split('.')[:-1]
-        if type(prefix) == str:
-            prefix = [prefix]
-        suffix = filename.split('.')[-1]
-        while filename in os.listdir(UPLOAD_USER_PIC_FOLDER):
-            x += 1
-            filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
-        path = UPLOAD_USER_PIC_FOLDER + secure_filename(filename)
-        image.save(path)
+        if image.filename == '':
+            path='static/pic/user_pics/avatar_2x.png'
+        else:
+            filename = image.filename
+            x = 0
+            prefix = filename.split('.')[:-1]
+            if type(prefix) == str:
+                prefix = [prefix]
+            suffix = filename.split('.')[-1]
+            while filename in os.listdir(UPLOAD_USER_PIC_FOLDER):
+                x += 1
+                filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
+            path = UPLOAD_USER_PIC_FOLDER + secure_filename(filename)
+            image.save(path)
         customer = Customer(name=name, email=email, address=address, deleted=False, photo='/' + path)
         customer.hash_password(password)
         session.add(customer)
