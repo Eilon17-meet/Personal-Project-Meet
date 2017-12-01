@@ -260,8 +260,9 @@ def my_products():
     if 'id' not in login_session:
         flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
-    products = session.query(Product).filter_by(customer_id=login_session['id']).all()
-    return render_template('my_products.html', products=products)
+    user = session.query(Customer).filter_by(id=login_session['id']).one()
+    products = session.query(Product).filter_by(customer_id=user.id).all()
+    return render_template('my_products.html', products=products, user=user)
 
 
 @app.route("/favorites")
