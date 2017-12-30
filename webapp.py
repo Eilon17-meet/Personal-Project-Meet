@@ -1,5 +1,5 @@
 import os
-
+from urllib2 import urlopen
 from flask import *
 from flask import session as login_session
 from werkzeug.utils import secure_filename
@@ -27,7 +27,7 @@ def get_ip():
 
 def get_ip_info():
     # We should use this
-    ip = get_ip[0]
+    ip = get_ip()[0]
     # ip = request.environ['REMOTE_ADDR']
     user_agent = request.user_agent
     user_agent_data = {}
