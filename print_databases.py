@@ -1,20 +1,20 @@
 from __future__ import division
 
-import sys
+# import sys
 
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, MetaData, inspect, Table
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("ERROR: You need to give me a .db file. For example:")
-        print("python print_database crudlab.db")
-        sys.exit(1)
+    # if len(sys.argv) != 2:
+    #     print("ERROR: You need to give me a .db file. For example:")
+    #     print("python print_database crudlab.db")
+    #     sys.exit(1)
 
-    db_file_name = sys.argv[1]
+    # db_file_name = sys.argv[1]
 
-    engine = create_engine('sqlite:///%s' % db_file_name)
-
+    # engine = create_engine('sqlite:///%s' % db_file_name)
+    engine = create_engine('postgres://wnhfzdmxqiwjjh:8303f7e3899346cf3160f14b33f334a61505629ce61bdd1ae4c38250fb34771d@ec2-54-227-250-33.compute-1.amazonaws.com:5432/df1iuch3j1v8gi')
     metadata = MetaData(engine)
 
     DBSession = sessionmaker(bind=engine)

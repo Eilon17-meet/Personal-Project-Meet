@@ -80,7 +80,6 @@ class Comment(Base):
     product_id = Column(Integer, ForeignKey('product.id'))
     product = relationship("Product", back_populates="comments")
 
-
-engine = create_engine('sqlite:///database.db')
+engine = create_engine('postgres://wnhfzdmxqiwjjh:8303f7e3899346cf3160f14b33f334a61505629ce61bdd1ae4c38250fb34771d@ec2-54-227-250-33.compute-1.amazonaws.com:5432/df1iuch3j1v8gi')
 
 Base.metadata.create_all(engine)
