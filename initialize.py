@@ -6,11 +6,12 @@ DBSession = sessionmaker(bind=engine, autoflush=False)
 session = DBSession()
 
 session.query(Comment).delete()
+session.query(Favorite).delete()
 session.query(Product).delete()
 session.query(Customer).delete()
 admin_email = 'eilon246810@gmail.com'
 admin_password = 'eilon123'
-admin = Customer(name='Manager Eilon', email=admin_email, address='No Adress')
+admin = Customer(id=1, name='Manager Eilon', email=admin_email, address='No Adress')
 admin.hash_password(admin_password)
 session.add(admin)
 session.commit()
