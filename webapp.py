@@ -12,8 +12,10 @@ UPLOAD_PRODUCT_PIC_FOLDER = 'static/pic/product_pics/'
 UPLOAD_USER_PIC_FOLDER = 'static/pic/user_pics/'
 app.config['UPLOAD_PRODUCT_PIC_FOLDER'] = UPLOAD_PRODUCT_PIC_FOLDER
 app.config['UPLOAD_USER_PIC_FOLDER'] = UPLOAD_USER_PIC_FOLDER
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://wnhfzdmxqiwjjh:8303f7e3899346cf3160f14b33f334a61505629ce61bdd1ae4c38250fb34771d@ec2-54-227-250-33.compute-1.amazonaws.com:5432/df1iuch3j1v8gi'
 
-engine = create_engine('postgres://wnhfzdmxqiwjjh:8303f7e3899346cf3160f14b33f334a61505629ce61bdd1ae4c38250fb34771d@ec2-54-227-250-33.compute-1.amazonaws.com:5432/df1iuch3j1v8gi')
+engine = create_engine(
+    'postgres://wnhfzdmxqiwjjh:8303f7e3899346cf3160f14b33f334a61505629ce61bdd1ae4c38250fb34771d@ec2-54-227-250-33.compute-1.amazonaws.com:5432/df1iuch3j1v8gi')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine, autoflush=False)
 session = DBSession()
@@ -106,7 +108,8 @@ def login():
                 login_session['id'] = 1
                 return redirect(url_for('admin_page', admin_email=customer.email))
             if customer.deleted:
-                flash('Customer was Deleted in ' + str(customer.when_deleted) + '!')
+                flash('Customer was Deleted in ' +
+                      str(customer.when_deleted) + '!')
                 return redirect(url_for('login'))
 
             login_session['name'] = customer.name
@@ -138,7 +141,7 @@ def newCustomer():
             flash("A user with this email address already exists")
             return redirect(url_for('newCustomer'))
         if image.filename == '':
-            path='static/pic/user_pics/avatar_2x.png'
+            path = 'static/pic/user_pics/avatar_2x.png'
         else:
             filename = image.filename
             x = 0
@@ -148,10 +151,12 @@ def newCustomer():
             suffix = filename.split('.')[-1]
             while filename in os.listdir(UPLOAD_USER_PIC_FOLDER):
                 x += 1
-                filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
+                filename = secure_filename(
+                    ''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
             path = UPLOAD_USER_PIC_FOLDER + secure_filename(filename)
             image.save(path)
-        customer = Customer(name=name, email=email, address=address, deleted=False, photo='/' + path)
+        customer = Customer(name=name, email=email,
+                            address=address, deleted=False, photo='/' + path)
         customer.hash_password(password)
         session.add(customer)
         session.commit()
@@ -182,7 +187,8 @@ def product(product_id):
 
         tags = product.tags.split()
 
-        number_of_similar_products = 6  # Number of how many similar products to show on the page.
+        # Number of how many similar products to show on the page.
+        number_of_similar_products = 6
 
         all_common_products = []
         common_tags_dic = {}
@@ -197,7 +203,7 @@ def product(product_id):
                             common_tags_dic[str(product_to_check)] += 1
 
         common_tags_dic_list = sorted(common_tags_dic, key=common_tags_dic.__getitem__, reverse=True)[
-                               :number_of_similar_products]
+            :number_of_similar_products]
 
         common_products = []
 
@@ -282,7 +288,8 @@ def removeFromCart(product_id):
     if 'id' not in login_session:
         flash("You must be logged in to perform this action.")
         return redirect(url_for('login'))
-    favorite = session.query(Favorite).filter_by(customer_id=login_session['id']).filter_by(product_id=product_id).one()
+    favorite = session.query(Favorite).filter_by(customer_id=login_session[
+        'id']).filter_by(product_id=product_id).one()
     session.delete(favorite)
     session.commit()
     flash("Item deleted from favorites successfully.")
@@ -328,7 +335,8 @@ def upload_page():
         price = request.form['price']
         if image.filename == '' or product_name == '' or description == '' or tags == '' or price == '':
             flash("Your form is missing arguments")
-            flash('You must have a photo, a name, a description, a price and at least one tag for your product')
+            flash(
+                'You must have a photo, a name, a description, a price and at least one tag for your product')
             return redirect(url_for('upload_page'))
         try:
             price = str(float(price))
@@ -351,7 +359,8 @@ def upload_page():
         suffix = filename.split('.')[-1]
         while filename in os.listdir(UPLOAD_PRODUCT_PIC_FOLDER):
             x += 1
-            filename = secure_filename(''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
+            filename = secure_filename(
+                ''.join(word + '.' for word in prefix)[:-1] + '(' + str(x) + ').' + suffix)
         path = UPLOAD_PRODUCT_PIC_FOLDER + secure_filename(filename)
         image.save(path)
 
