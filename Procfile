@@ -1,1 +1,1 @@
-web: gunicorn -w 4 -b 0.0.0.0:$PORT -k  gevent webapp:app --preload --log-level debug
+web: gunicorn -w 4 -b 0.0.0.0:$PORT -k  gevent webapp:app
