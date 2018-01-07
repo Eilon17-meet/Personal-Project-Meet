@@ -27,21 +27,30 @@
     <!-- <script src="src/bootstrap-rating-input.js"></script> -->
     <script src="/static/js/bootstrap-rating-input.min.js"></script>
 
-
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112071255-1"></script>
     <script>
-$(document).ready(function(){
-    $("#flip").click(function(){
-        $("#panel").slideDown("slow");
-    });
-});
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-
-
-
-
-
+      gtag('config', 'UA-112071255-1');
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <script>
+    $(document).ready(function(){
+        $("#flip").click(function(){
+            $("#panel").slideDown("slow");
+        });
+    });
+
+
+
+
+
+
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <style>
 #panel, #flip {
     padding: 5px;
